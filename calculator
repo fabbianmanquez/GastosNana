@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gastos Compartidos</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff;
+      --bg2: #f5f5f4;
+      --bg3: #eeede9;
+      --text: #1a1a1a;
+      --text2: #666660;
+      --text3: #999994;
+      --border: rgba(0,0,0,0.12);
+      --border2: rgba(0,0,0,0.22);
+      --green: #1D9E75;
+      --green-light: #E1F5EE;
+      --green-dark: #085041;
+      --green-mid: #0F6E56;
+      --red-light: #FAECE7;
+      --red: #993C1D;
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1c1a;
+        --bg2: #252523;
+        --bg3: #2e2e2b;
+        --text: #f0efe9;
+        --text2: #a8a89f;
+        --text3: #6b6b64;
+        --border: rgba(255,255,255,0.1);
+        --border2: rgba(255,255,255,0.2);
+        --green-light: #0a3325;
+        --green-dark: #9FE1CB;
+      }
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; padding: 1.5rem 1rem 4rem; }
+    .app { max-width: 620px; margin: 0 auto; }
+    h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .subtitle { font-size: 14px; color: var(--text2); margin-bottom: 1.5rem; }
+    .step { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+    .step-title { font-size: 15px; font-weight: 500; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+    .step-num { background: var(--bg2); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: var(--text2); flex-shrink: 0; }
+    .friends-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+    .chip { padding: 7px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px; user-select: none; }
+    .chip:hover { background: var(--bg2); }
+    .chip.on { background: var(--green-light); border-color: var(--green); color: var(--green-dark); }
+    .dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--border2); flex-shrink: 0; }
+    .chip.on .dot { background: var(--green); border-color: var(--green); }
+    .amount-grid { display: grid; gap: 8px; }
+    .amount-row { display: grid; grid-template-columns: 1fr 130px; gap: 8px; align-items: center; font-size: 14px; }
+    .amount-input { display: flex; align-items: center; gap: 6px; }
+    .amount-input span { font-size: 13px; color: var(--text2); }
+    input[type="number"], input[type="text"] { width: 100%; padding: 7px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 14px; outline: none; }
+    input:focus { border-color: var(--green); box-shadow: 0 0 0 2px rgba(29,158,117,0.15); }
+    .hint { font-size: 12px; color: var(--text3); margin-top: 8px; }
+    .ge-card { background: var(--bg2); border-radius: var(--radius); padding: 12px; margin-bottom: 10px; }
+    .ge-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .ge-top span { font-size: 13px; font-weight: 500; }
+    .ge-card label { font-size: 12px; color: var(--text2); display: block; margin-top: 10px; margin-bottom: 4px; }
+    .ge-card label:first-of-type { margin-top: 0; }
+    .pax-header { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; margin-bottom: 6px; }
+    .pax-header label { margin: 0; }
+    .btn-clear { background: none; border: none; font-size: 11px; color: var(--text3); cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+    .btn-clear:hover { color: var(--red); background: var(--red-light); }
+    .pax-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pax-chip { padding: 5px 11px; border: 1.5px solid var(--border2); border-radius: 20px; background: var(--bg); color: var(--text2); cursor: pointer; font-size: 12px; user-select: none; transition: all 0.1s; }
+    .pax-chip:hover { border-color: var(--green); color: var(--green-dark); }
+    .pax-chip.on { background: var(--green); border-color: var(--green); color: white; font-weight: 500; }
+    .pax-summary { margin-top: 8px; padding: 8px 10px; background: var(--bg); border-radius: var(--radius); border: 0.5px solid var(--border); min-height: 34px; }
+    .pax-summary .lbl { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+    .pax-summary .names { font-size: 13px; font-weight: 500; line-height: 1.5; }
+    .pax-summary .empty { font-size: 13px; color: var(--text3); font-style: italic; }
+    .pax-count { display: inline-block; background: var(--green-light); color: var(--green-dark); border-radius: 20px; font-size: 11px; font-weight: 500; padding: 1px 7px; margin-left: 5px; }
+    .btn-add { padding: 8px 14px; border: 0.5px dashed var(--border2); border-radius: var(--radius); background: transparent; color: var(--text2); cursor: pointer; font-size: 13px; width: 100%; }
+    .btn-add:hover { background: var(--bg2); }
+    .btn-rm { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 20px; line-height: 1; padding: 0 2px; }
+    .btn-rm:hover { color: var(--red); }
+    .btn-calc { padding: 13px; background: var(--green); border: none; border-radius: var(--radius); color: white; font-size: 15px; font-weight: 500; cursor: pointer; width: 100%; margin-top: 0.5rem; }
+    .btn-calc:hover { background: var(--green-mid); }
+    .err { color: var(--red); font-size: 13px; margin-top: 8px; padding: 8px 12px; background: var(--red-light); border-radius: var(--radius); display: none; }
+    .resultado { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-top: 1rem; }
+    .res-title { font-size: 16px; font-weight: 500; margin-bottom: 1rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 1rem; }
+    .stat { background: var(--bg2); border-radius: var(--radius); padding: 10px; }
+    .stat .lbl { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+    .stat .val { font-size: 17px; font-weight: 500; }
+    .sec-title { font-size: 12px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: .05em; margin: 1rem 0 6px; }
+    .ge-result { padding: 8px 12px; background: var(--bg2); border-radius: var(--radius); margin-bottom: 6px; font-size: 13px; }
+    .ge-result strong { font-weight: 500; }
+    .tx { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--bg2); border-radius: var(--radius); margin-bottom: 6px; font-size: 14px; flex-wrap: wrap; }
+    .tx .from { font-weight: 500; }
+    .tx .arrow { color: var(--text3); }
+    .tx .to { font-weight: 500; color: var(--green-dark); }
+    .tx .amt { margin-left: auto; font-weight: 500; }
+    .copy-btn { display: flex; align-items: center; gap: 6px; padding: 9px 14px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: transparent; color: var(--text2); cursor: pointer; font-size: 13px; margin-top: 1rem; }
+    .copy-btn:hover { background: var(--bg2); }
+    .badge-ok { display: inline-block; background: var(--green-light); color: var(--green-dark); border-radius: 20px; font-size: 13px; padding: 6px 14px; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <h1>💸 Gastos compartidos</h1>
+  <p class="subtitle">Cargá los datos del evento y calculamos quién le debe a quién.</p>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">1</span>¿Quiénes participaron?</div>
+    <div class="friends-grid" id="fg"></div>
+    <div class="err" id="e1">Seleccioná al menos 2 personas.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">2</span>¿Cuánto gastó cada uno?</div>
+    <div class="amount-grid" id="ag"></div>
+    <p class="hint">Ingresá 0 si alguien no gastó nada.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-num">3</span>Gastos específicos <span style="font-size:12px;font-weight:400;color:var(--text3);margin-left:4px">(opcional)</span></div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Gastos que se dividen solo entre algunos. Ej: Uber, botella, entradas, etc.</p>
+    <div id="gel"></div>
+    <button class="btn-add" id="badd"><i class="ti ti-plus"></i> Agregar gasto específico</button>
+    <div class="err" id="e3">Completá el monto y seleccioná al menos 1 participante en cada gasto.</div>
+  </div>
+
+  <button class="btn-calc" id="bcalc"><i class="ti ti-calculator"></i> Calcular cuentas</button>
+  <div id="out"></div>
+</div>
+
+<script>
+(function() {
+  var TODOS = ["Nahue","Fabi","Timo","Momo","Juan","Tomi","Tincho","Joaco F","Joaco G","Nacho","Maxi","Claudio"];
+  var sel = [];
+  var ges = [];
+  var gid = 0;
+
+  function fmt(n) { return '$' + (Math.round(n * 100) / 100).toFixed(2); }
+
+  function renderFriends() {
+    var fg = document.getElementById('fg');
+    fg.innerHTML = '';
+    TODOS.forEach(function(f) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip' + (sel.indexOf(f) >= 0 ? ' on' : '');
+      var dot = document.createElement('span');
+      dot.className = 'dot';
+      btn.appendChild(dot);
+      btn.appendChild(document.createTextNode(f));
+      btn.addEventListener('click', function() {
+        var idx = sel.indexOf(f);
+        if (idx >= 0) sel.splice(idx, 1);
+        else sel.push(f);
+        renderFriends();
+        renderAmounts();
+        ges.forEach(function(ge) { renderPax(ge); });
+        document.getElementById('e1').style.display = 'none';
+      });
+      fg.appendChild(btn);
+    });
+  }
+
+  function renderAmounts() {
+    var ag = document.getElementById('ag');
+    var prev = {};
+    ag.querySelectorAll('input[data-f]').forEach(function(inp) { prev[inp.getAttribute('data-f')] = inp.value; });
+    ag.innerHTML = '';
+    sel.forEach(function(f) {
+      var row = document.createElement('div');
+      row.className = 'amount-row';
+      var lbl = document.createElement('span');
+      lbl.textContent = f;
+      var wrap = document.createElement('div');
+      wrap.className = 'amount-input';
+      var sign = document.createElement('span');
+      sign.textContent = '$';
+      var inp = document.createElement('input');
+      inp.type = 'number'; inp.min = '0'; inp.step = 'any'; inp.placeholder = '0';
+      inp.setAttribute('data-f', f);
+      inp.value = prev[f] || '';
+      inp.style.width = '100px';
+      wrap.appendChild(sign); wrap.appendChild(inp);
+      row.appendChild(lbl); row.appendChild(wrap);
+      ag.appendChild(row);
+    });
+  }
+
+  function updateSummary(ge) {
+    var el = document.getElementById('summary_' + ge.id);
+    if (!el) return;
+    if (ge.pax.length === 0) {
+      el.innerHTML = '<div class="lbl">Seleccionados</div><div class="empty">Ninguno todavía — tocá los nombres arriba</div>';
+    } else {
+      el.innerHTML = '<div class="lbl">Seleccionados <span class="pax-count">' + ge.pax.length + '</span></div><div class="names">' + ge.pax.join(' · ') + '</div>';
+    }
+  }
+
+  function renderPax(ge) {
+    var wrap = document.getElementById('pax_' + ge.id);
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    sel.forEach(function(f) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pax-chip' + (ge.pax.indexOf(f) >= 0 ? ' on' : '');
+      btn.textContent = f;
+      btn.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var idx = ge.pax.indexOf(f);
+        if (idx >= 0) { ge.pax.splice(idx, 1); btn.className = 'pax-chip'; }
+        else { ge.pax.push(f); btn.className = 'pax-chip on'; }
+        updateSummary(ge);
+        document.getElementById('e3').style.display = 'none';
+      });
+      wrap.appendChild(btn);
+    });
+    updateSummary(ge);
+  }
+
+  function addGE() {
+    gid++;
+    var ge = { id: gid, pax: [] };
+    ges.push(ge);
+    var card = document.createElement('div');
+    card.className = 'ge-card'; card.id = 'ge_' + ge.id;
+    var top = document.createElement('div'); top.className = 'ge-top';
+    var title = document.createElement('span'); title.textContent = 'Gasto #' + gid;
+    var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'btn-rm'; rm.innerHTML = '&times;'; rm.title = 'Eliminar';
+    rm.addEventListener('click', function() { ges = ges.filter(function(g){ return g.id !== ge.id; }); card.remove(); });
+    top.appendChild(title); top.appendChild(rm); card.appendChild(top);
+    var l1 = document.createElement('label'); l1.textContent = 'Descripción';
+    var i1 = document.createElement('input'); i1.type = 'text'; i1.id = 'desc_' + ge.id; i1.placeholder = 'Ej: Uber, botella, entradas...';
+    var l2 = document.createElement('label'); l2.textContent = 'Monto total $';
+    var i2 = document.createElement('input'); i2.type = 'number'; i2.id = 'monto_' + ge.id; i2.min = '0'; i2.step = 'any'; i2.placeholder = '0';
+    var ph = document.createElement('div'); ph.className = 'pax-header';
+    var l3 = document.createElement('label'); l3.textContent = 'Participantes';
+    var cl = document.createElement('button'); cl.type = 'button'; cl.className = 'btn-clear'; cl.textContent = 'Limpiar selección';
+    cl.addEventListener('click', function() { ge.pax = []; renderPax(ge); });
+    ph.appendChild(l3); ph.appendChild(cl);
+    var pw = document.createElement('div'); pw.className = 'pax-wrap'; pw.id = 'pax_' + ge.id;
+    var sm = document.createElement('div'); sm.className = 'pax-summary'; sm.id = 'summary_' + ge.id;
+    card.appendChild(l1); card.appendChild(i1); card.appendChild(l2); card.appendChild(i2);
+    card.appendChild(ph); card.appendChild(pw); card.appendChild(sm);
+    document.getElementById('gel').appendChild(card);
+    renderPax(ge);
+  }
+
+  function calcular() {
+    document.getElementById('e1').style.display = 'none';
+    document.getElementById('e3').style.display = 'none';
+    if (sel.length < 2) { document.getElementById('e1').style.display = 'block'; return; }
+    var geData = [];
+    for (var i = 0; i < ges.length; i++) {
+      var ge = ges[i];
+      var desc = document.getElementById('desc_' + ge.id).value || 'Sin nombre';
+      var monto = parseFloat(document.getElementById('monto_' + ge.id).value) || 0;
+      if (!monto || ge.pax.length < 1) { document.getElementById('e3').style.display = 'block'; return; }
+      geData.push({ desc: desc, monto: monto, pax: ge.pax.slice() });
+    }
+    var gastos = {};
+    sel.forEach(function(f) {
+      var inp = document.querySelector('input[data-f="' + f + '"]');
+      gastos[f] = parseFloat(inp ? inp.value : 0) || 0;
+    });
+    var totalGeneral = sel.reduce(function(s,f){ return s + gastos[f]; }, 0);
+    var totalEsp = geData.reduce(function(s,g){ return s + g.monto; }, 0);
+    var totalComun = totalGeneral - totalEsp;
+    if (totalComun < -0.01) { showResult('<div class="resultado"><p style="color:var(--red)">Los gastos específicos superan el total. Revisá los montos.</p></div>'); return; }
+    var parteComun = sel.length > 0 ? totalComun / sel.length : 0;
+    var balance = {};
+    sel.forEach(function(f) { balance[f] = gastos[f] - parteComun; });
+    geData.forEach(function(g) {
+      var parte = g.monto / g.pax.length;
+      g.pax.forEach(function(p) { if (balance[p] !== undefined) balance[p] -= parte; });
+    });
+    var txs = minimizar(balance);
+
+    var html = '<div class="resultado"><div class="res-title">Resultado del evento</div>';
+    html += '<div class="stats-grid">';
+    html += '<div class="stat"><div class="lbl">Total gastado</div><div class="val">' + fmt(totalGeneral) + '</div></div>';
+    html += '<div class="stat"><div class="lbl">Gasto común</div><div class="val">' + fmt(Math.max(0,totalComun)) + '</div></div>';
+    html += '<div class="stat"><div class="lbl">Por persona</div><div class="val">' + fmt(parteComun) + '</div></div>';
+    html += '</div>';
+    if (geData.length > 0) {
+      html += '<div class="sec-title">Gastos específicos</div>';
+      geData.forEach(function(g) {
+        var pp = g.monto / g.pax.length;
+        html += '<div class="ge-result"><strong>' + g.desc + '</strong> — ' + fmt(g.monto) + ' ÷ ' + g.pax.join(', ') + ' = ' + fmt(pp) + '/persona</div>';
+      });
+    }
+    html += '<div class="sec-title">Transferencias (' + txs.length + ')</div>';
+    if (txs.length === 0) {
+      html += '<span class="badge-ok">✓ Todo balanceado — no hay transferencias necesarias</span>';
+    } else {
+      txs.forEach(function(t) {
+        html += '<div class="tx"><span class="from">' + t.from + '</span><span class="arrow">→</span><span class="to">' + t.to + '</span><span class="amt">' + fmt(t.amount) + '</span></div>';
+      });
+    }
+    var txt = 'GASTOS DEL EVENTO\n';
+    txt += 'Total: ' + fmt(totalGeneral) + ' | Común: ' + fmt(Math.max(0,totalComun)) + ' | Por persona: ' + fmt(parteComun) + '\n\n';
+    if (geData.length > 0) { txt += 'GASTOS ESPECÍFICOS:\n'; geData.forEach(function(g){ txt += '- ' + g.desc + ': ' + fmt(g.monto) + ' ÷ ' + g.pax.join(', ') + '\n'; }); txt += '\n'; }
+    txt += 'TRANSFERENCIAS:\n';
+    if (txs.length === 0) txt += 'Todo balanceado, no hay transferencias.\n';
+    else txs.forEach(function(t){ txt += t.from + ' → ' + t.to + ': ' + fmt(t.amount) + '\n'; });
+    html += '<button class="copy-btn" id="cbtn"><i class="ti ti-copy"></i> Copiar para WhatsApp</button></div>';
+    showResult(html);
+    document.getElementById('cbtn').addEventListener('click', function() {
+      navigator.clipboard.writeText(txt).then(function() {
+        var b = document.getElementById('cbtn');
+        b.innerHTML = '<i class="ti ti-check"></i> ¡Copiado!';
+        setTimeout(function(){ b.innerHTML = '<i class="ti ti-copy"></i> Copiar para WhatsApp'; }, 2000);
+      });
+    });
+  }
+
+  function showResult(html) {
+    var out = document.getElementById('out');
+    out.innerHTML = html; out.style.display = 'block';
+    out.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function minimizar(bal) {
+    var EPS = 0.005, deben = [], reciben = [];
+    Object.keys(bal).forEach(function(p) {
+      var b = Math.round(bal[p]*100)/100;
+      if (b < -EPS) deben.push({name:p, amt:-b});
+      else if (b > EPS) reciben.push({name:p, amt:b});
+    });
+    deben.sort(function(a,b){return b.amt-a.amt;}); reciben.sort(function(a,b){return b.amt-a.amt;});
+    var result=[], i=0, j=0;
+    while (i<deben.length && j<reciben.length) {
+      var d=deben[i], a=reciben[j], t=Math.min(d.amt,a.amt);
+      if (t>EPS) result.push({from:d.name, to:a.name, amount:Math.round(t*100)/100});
+      d.amt-=t; a.amt-=t;
+      if (d.amt<EPS) i++;
+      if (a.amt<EPS) j++;
+    }
+    return result;
+  }
+
+  document.getElementById('badd').addEventListener('click', addGE);
+  document.getElementById('bcalc').addEventListener('click', calcular);
+  renderFriends();
+})();
+</script>
+</body>
+</html>
