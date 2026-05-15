@@ -160,7 +160,7 @@ body { background-size: 200px auto; }
 Gastos específicos
 <span style="font-size:12px;font-weight:400;color:#aaa;margin-left:2px">(opcional)</span>
 </div>
-<p style="font-size:13px;color:#555;margin-bottom:10px">Gastos que se dividen solo entre algunos. Ej: Uber, botella, entradas, etc.</p>
+<p style="font-size:13px;color:#555;margin-bottom:10px">Gastos que se dividen solo entre algunos. Ej: Fernet, birras, la trola de tu hermana etc.</p>
 <div id="gel"></div>
 <button class="btn-add-ge" id="badd"><i class="ti ti-plus"></i> Agregar gasto específico</button>
 <div class="disclaimer">
@@ -381,7 +381,7 @@ var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'b
 rm.addEventListener('click', function() { ges = ges.filter(function(g) { return g.id !== ge.id; }); card.remove(); });
 top.appendChild(title); top.appendChild(rm); card.appendChild(top);
 var l1 = document.createElement('label'); l1.textContent = 'Descripción';
-var i1 = document.createElement('input'); i1.type = 'text'; i1.id = 'desc_' + ge.id; i1.placeholder = 'Ej: Uber, botella, entradas...';
+var i1 = document.createElement('input'); i1.type = 'text'; i1.id = 'desc_' + ge.id; i1.placeholder = 'Ej: Fernet, birras, la trola de tu hermana...';
 var l2 = document.createElement('label'); l2.textContent = 'Monto total $';
 var i2 = document.createElement('input'); i2.type = 'number'; i2.id = 'monto_' + ge.id; i2.min = '0'; i2.step = 'any'; i2.placeholder = '0';
 i2.addEventListener('input', function() { checkGeWarning(ge.id); });
