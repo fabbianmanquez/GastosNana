@@ -372,14 +372,14 @@
     txt += '💰 *Lo que puso cada uno:*' + NL;
     pagaron.forEach(function(f) { txt += '  • ' + f + ': ' + fmt(gastos[f]) + NL; });
     if (noPagaron.length > 0) {
-      txt += '  • ' + noPagaron.join(', ') + ': no pusieron nada' + NL;
+      txt += '  • ' + noPagaron.join(', ') + ': no puso nada' + NL;
     }
     txt += NL;
 
     txt += '📊 *Totales:*' + NL;
     txt += '  • Total juntado: ' + fmt(totalGeneral) + NL;
     txt += '  • Gasto común (entre todos): ' + fmt(Math.max(0, totalComun)) + NL;
-    txt += '  • Le corresponde a cada uno: ' + fmt(parteComun) + NL;
+
 
     if (geData.length > 0) {
       txt += NL + '🔖 *Gastos puntuales:*' + NL;
