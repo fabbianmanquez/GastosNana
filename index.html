@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -31,10 +32,31 @@
     .chip.on { background: #e8f0fe; border-color: #1a56db; color: #1e40af; }
     .dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #c7d7f8; flex-shrink: 0; }
     .chip.on .dot { background: #1a56db; border-color: #1a56db; }
+    /* Invitados */
+    .divider { border: none; border-top: 1px dashed #c7d7f8; margin: 14px 0 10px; }
+    .guest-section-label { font-size: 12px; color: #888; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .guests-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-bottom: 10px; min-height: 0; }
+    .guest-chip { padding: 7px 10px; border: 1px solid #c7d7f8; border-radius: 8px; background: #fff; color: #1a1a1a; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 5px; user-select: none; }
+    .guest-chip:hover { background: #e8f0fe; }
+    .guest-chip.on { background: #e8f0fe; border-color: #1a56db; color: #1e40af; }
+    .guest-chip .gdot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #c7d7f8; flex-shrink: 0; }
+    .guest-chip.on .gdot { background: #1a56db; border-color: #1a56db; }
+    .guest-chip .grm { margin-left: auto; background: none; border: none; color: #bbb; cursor: pointer; font-size: 15px; line-height: 1; padding: 0 0 0 4px; }
+    .guest-chip .grm:hover { color: #dc2626; }
+    .add-guest-row { display: flex; gap: 8px; }
+    .add-guest-row input { flex: 1; padding: 8px 12px; border: 1px solid #c7d7f8; border-radius: 8px; background: #fff; color: #1a1a1a; font-size: 13px; outline: none; }
+    .add-guest-row input:focus { border-color: #1a56db; box-shadow: 0 0 0 2px #e8f0fe; }
+    .add-guest-row input::placeholder { color: #bbb; }
+    .btn-add-guest { padding: 8px 14px; background: #1a56db; border: none; border-radius: 8px; color: white; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+    .btn-add-guest:hover { background: #1e40af; }
+    .btn-toggle-guests { display: flex; align-items: center; gap: 6px; margin-top: 12px; padding: 8px 12px; border: 1px dashed #c7d7f8; border-radius: 8px; background: transparent; color: #1a56db; cursor: pointer; font-size: 13px; width: 100%; }
+    .btn-toggle-guests:hover { background: #e8f0fe; }
+    /* Resto */
     .amount-grid { display: grid; gap: 10px; }
     .amt-row { display: grid; grid-template-columns: 1fr 145px; gap: 8px; align-items: center; }
     .amt-label { font-size: 14px; color: #1a1a1a; display: flex; align-items: center; gap: 9px; }
     .avatar { width: 30px; height: 30px; border-radius: 50%; background: #e8f0fe; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #1a56db; flex-shrink: 0; border: 1px solid #c7d7f8; }
+    .avatar.guest { background: #fef9e7; border-color: #f0d080; color: #b08000; }
     .amt-input { display: flex; align-items: center; gap: 6px; }
     .amt-input span { font-size: 13px; color: #888; }
     .amt-input input, input[type="text"], input[type="number"] { width: 100%; padding: 8px 10px; border: 1px solid #c7d7f8; border-radius: 8px; background: #fff; color: #1a1a1a; font-size: 14px; outline: none; }
@@ -102,7 +124,26 @@
   <div class="step">
     <div class="step-title"><span class="step-num">1</span>¿Quiénes participaron?</div>
     <div class="friends-grid" id="fg"></div>
-    <div class="err" id="e1">Seleccioná al menos 2 personas.</div>
+
+```
+<hr class="divider">
+
+<button class="btn-toggle-guests" id="btn-toggle-guests">
+  <i class="ti ti-user-plus"></i> Invitados
+</button>
+
+<div id="guest-panel" style="display:none;margin-top:12px">
+  <div class="guest-section-label"><i class="ti ti-star" style="font-size:13px"></i> Invitados del evento</div>
+  <div class="guests-grid" id="gg"></div>
+  <div class="add-guest-row">
+    <input type="text" id="inp-guest" placeholder="Nombre del invitado..." maxlength="30" autocomplete="off">
+    <button class="btn-add-guest" id="btn-add-guest"><i class="ti ti-plus"></i> Agregar</button>
+  </div>
+</div>
+
+<div class="err" id="e1">Seleccioná al menos 2 personas.</div>
+```
+
   </div>
 
   <div class="step">
@@ -117,7 +158,7 @@
       Gastos específicos
       <span style="font-size:12px;font-weight:400;color:#aaa;margin-left:2px">(opcional)</span>
     </div>
-    <p style="font-size:13px;color:#555;margin-bottom:10px">Gastos que se dividen solo entre algunos. Ej: Fernet, postre, la trola de tu hermana, etc.</p>
+    <p style="font-size:13px;color:#555;margin-bottom:10px">Gastos que se dividen solo entre algunos. Ej: Uber, botella, entradas, etc.</p>
     <div id="gel"></div>
     <button class="btn-add-ge" id="badd"><i class="ti ti-plus"></i> Agregar gasto específico</button>
     <div class="disclaimer">
@@ -127,7 +168,8 @@
     <div class="err" id="e3">Hay un gasto específico incompleto. Completá el monto y seleccioná al menos 1 participante, o cerralo tocando la <strong>X</strong>.</div>
   </div>
 
-  <button class="btn-blue" id="bcalc"><i class="ti ti-calculator"></i> Calcular cuentas</button>
+<button class="btn-blue" id="bcalc"><i class="ti ti-calculator"></i> Calcular cuentas</button>
+
   <div id="out"></div>
 </div>
 
@@ -135,8 +177,11 @@
 (function () {
   var TODOS = ["Nahue","Fabi","Timo","Momo","Juan","Tomi","Tincho","Joaco F","Joaco G","Nacho","Maxi","Claudio"];
   var sel = [];
+  var guests = [];      // nombres de invitados agregados
+  var selGuests = [];   // invitados seleccionados para el evento
   var ges = [];
   var gid = 0;
+  var guestPanelOpen = false;
 
   function fmt(n) {
     var rounded = Math.round(n * 100) / 100;
@@ -151,9 +196,13 @@
     return name.substring(0, 2).toUpperCase();
   }
 
+  function allSelected() {
+    return sel.concat(selGuests);
+  }
+
   function getTotalGeneral() {
     var total = 0;
-    sel.forEach(function(f) {
+    allSelected().forEach(function(f) {
       var inp = document.querySelector('input[data-f="' + f + '"]');
       total += parseFloat(inp ? inp.value : 0) || 0;
     });
@@ -184,6 +233,7 @@
     }
   }
 
+  // ── Amigos predefinidos ──
   function renderFriends() {
     var fg = document.getElementById('fg');
     fg.innerHTML = '';
@@ -191,8 +241,7 @@
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'chip' + (sel.indexOf(f) >= 0 ? ' on' : '');
-      var dot = document.createElement('span');
-      dot.className = 'dot';
+      var dot = document.createElement('span'); dot.className = 'dot';
       btn.appendChild(dot);
       btn.appendChild(document.createTextNode(f));
       btn.addEventListener('click', function() {
@@ -208,38 +257,101 @@
     });
   }
 
+  // ── Panel de invitados ──
+  document.getElementById('btn-toggle-guests').addEventListener('click', function() {
+    guestPanelOpen = !guestPanelOpen;
+    var panel = document.getElementById('guest-panel');
+    panel.style.display = guestPanelOpen ? 'block' : 'none';
+    var btn = document.getElementById('btn-toggle-guests');
+    btn.innerHTML = guestPanelOpen
+      ? '<i class="ti ti-chevron-up"></i> Ocultar invitados'
+      : '<i class="ti ti-user-plus"></i> Invitados';
+  });
+
+  function renderGuests() {
+    var gg = document.getElementById('gg');
+    gg.innerHTML = '';
+    guests.forEach(function(g) {
+      var chip = document.createElement('div');
+      chip.className = 'guest-chip' + (selGuests.indexOf(g) >= 0 ? ' on' : '');
+      var gdot = document.createElement('span'); gdot.className = 'gdot';
+      var lbl = document.createElement('span'); lbl.textContent = g; lbl.style.flex = '1';
+      var grm = document.createElement('button'); grm.type = 'button'; grm.className = 'grm'; grm.innerHTML = '&times;'; grm.title = 'Eliminar invitado';
+      grm.addEventListener('click', function(e) {
+        e.stopPropagation();
+        guests = guests.filter(function(x) { return x !== g; });
+        selGuests = selGuests.filter(function(x) { return x !== g; });
+        ges.forEach(function(ge) {
+          ge.pax = ge.pax.filter(function(x) { return x !== g; });
+          renderPax(ge);
+        });
+        renderGuests();
+        renderAmounts();
+        ges.forEach(function(ge) { checkGeWarning(ge.id); });
+      });
+      chip.appendChild(gdot); chip.appendChild(lbl); chip.appendChild(grm);
+      chip.addEventListener('click', function() {
+        var idx = selGuests.indexOf(g);
+        if (idx >= 0) selGuests.splice(idx, 1);
+        else selGuests.push(g);
+        renderGuests();
+        renderAmounts();
+        ges.forEach(function(ge) { renderPax(ge); checkGeWarning(ge.id); });
+        document.getElementById('e1').style.display = 'none';
+      });
+      gg.appendChild(chip);
+    });
+  }
+
+  function addGuest() {
+    var inp = document.getElementById('inp-guest');
+    var name = inp.value.trim();
+    if (!name) return;
+    var all = TODOS.concat(guests);
+    if (all.indexOf(name) >= 0) { inp.select(); return; }
+    guests.push(name);
+    inp.value = '';
+    inp.focus();
+    renderGuests();
+  }
+
+  document.getElementById('btn-add-guest').addEventListener('click', addGuest);
+  document.getElementById('inp-guest').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); addGuest(); }
+  });
+
+  // ── Montos ──
   function renderAmounts() {
     var ag = document.getElementById('ag');
     var prev = {};
     ag.querySelectorAll('input[data-f]').forEach(function(inp) { prev[inp.getAttribute('data-f')] = inp.value; });
     ag.innerHTML = '';
-    sel.forEach(function(f) {
-      var row = document.createElement('div');
-      row.className = 'amt-row';
-      var lbl = document.createElement('div');
-      lbl.className = 'amt-label';
+    allSelected().forEach(function(f) {
+      var isGuest = guests.indexOf(f) >= 0;
+      var row = document.createElement('div'); row.className = 'amt-row';
+      var lbl = document.createElement('div'); lbl.className = 'amt-label';
       var av = document.createElement('div');
-      av.className = 'avatar';
+      av.className = 'avatar' + (isGuest ? ' guest' : '');
       av.textContent = initials(f);
       lbl.appendChild(av);
-      lbl.appendChild(document.createTextNode(f));
-      var wrap = document.createElement('div');
-      wrap.className = 'amt-input';
-      var sign = document.createElement('span');
-      sign.textContent = '$';
+      var nameSpan = document.createElement('span');
+      nameSpan.textContent = f + (isGuest ? ' ★' : '');
+      nameSpan.style.fontSize = '14px';
+      lbl.appendChild(nameSpan);
+      var wrap = document.createElement('div'); wrap.className = 'amt-input';
+      var sign = document.createElement('span'); sign.textContent = '$';
       var inp = document.createElement('input');
       inp.type = 'number'; inp.min = '0'; inp.step = 'any'; inp.placeholder = '0';
       inp.setAttribute('data-f', f);
       inp.value = prev[f] || '';
-      inp.addEventListener('input', function() {
-        ges.forEach(function(ge) { checkGeWarning(ge.id); });
-      });
+      inp.addEventListener('input', function() { ges.forEach(function(ge) { checkGeWarning(ge.id); }); });
       wrap.appendChild(sign); wrap.appendChild(inp);
       row.appendChild(lbl); row.appendChild(wrap);
       ag.appendChild(row);
     });
   }
 
+  // ── Gastos específicos ──
   function updateSummary(ge) {
     var el = document.getElementById('summary_' + ge.id);
     if (!el) return;
@@ -254,11 +366,11 @@
     var wrap = document.getElementById('pax_' + ge.id);
     if (!wrap) return;
     wrap.innerHTML = '';
-    sel.forEach(function(f) {
+    allSelected().forEach(function(f) {
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'pax-chip' + (ge.pax.indexOf(f) >= 0 ? ' on' : '');
-      btn.textContent = f;
+      btn.textContent = f + (guests.indexOf(f) >= 0 ? ' ★' : '');
       btn.addEventListener('click', function(e) {
         e.preventDefault(); e.stopPropagation();
         var idx = ge.pax.indexOf(f);
@@ -276,8 +388,7 @@
     gid++;
     var ge = { id: gid, pax: [] };
     ges.push(ge);
-    var card = document.createElement('div');
-    card.className = 'ge-card'; card.id = 'ge_' + ge.id;
+    var card = document.createElement('div'); card.className = 'ge-card'; card.id = 'ge_' + ge.id;
     var top = document.createElement('div'); top.className = 'ge-top';
     var title = document.createElement('span'); title.textContent = 'Gasto específico #' + gid;
     var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'btn-rm'; rm.innerHTML = '&times;';
@@ -303,10 +414,12 @@
     renderPax(ge);
   }
 
+  // ── Calcular ──
   function calcular() {
     document.getElementById('e1').style.display = 'none';
     document.getElementById('e3').style.display = 'none';
-    if (sel.length < 2) { document.getElementById('e1').style.display = 'block'; return; }
+    var todos = allSelected();
+    if (todos.length < 2) { document.getElementById('e1').style.display = 'block'; return; }
     var geData = [];
     for (var i = 0; i < ges.length; i++) {
       var ge = ges[i];
@@ -315,30 +428,28 @@
       if (!monto || ge.pax.length < 1) { document.getElementById('e3').style.display = 'block'; return; }
       geData.push({ desc: desc, monto: monto, pax: ge.pax.slice() });
     }
-
     var gastos = {};
-    sel.forEach(function(f) {
+    todos.forEach(function(f) {
       var inp = document.querySelector('input[data-f="' + f + '"]');
       gastos[f] = parseFloat(inp ? inp.value : 0) || 0;
     });
-
-    var totalGeneral = sel.reduce(function(s, f) { return s + gastos[f]; }, 0);
+    var totalGeneral = todos.reduce(function(s, f) { return s + gastos[f]; }, 0);
     var totalEsp = geData.reduce(function(s, g) { return s + g.monto; }, 0);
     var totalComun = totalGeneral - totalEsp;
     if (totalComun < -0.01) {
       showResult('<div class="resultado"><p style="color:#dc2626;font-size:14px">Los gastos específicos superan el total. Revisá los montos.</p></div>');
       return;
     }
-    var parteComun = sel.length > 0 ? totalComun / sel.length : 0;
+    var parteComun = todos.length > 0 ? totalComun / todos.length : 0;
     var balance = {};
-    sel.forEach(function(f) { balance[f] = gastos[f] - parteComun; });
+    todos.forEach(function(f) { balance[f] = gastos[f] - parteComun; });
     geData.forEach(function(g) {
       var parte = g.monto / g.pax.length;
       g.pax.forEach(function(p) { if (balance[p] !== undefined) balance[p] -= parte; });
     });
     var txs = minimizar(balance);
 
-    // UI
+    // UI resultado
     var html = '<div class="resultado"><div class="res-title">Resultado del evento</div>';
     html += '<div class="stats-grid">';
     html += '<div class="stat"><div class="lbl">Total gastado</div><div class="val">' + fmt(totalGeneral) + '</div></div>';
@@ -361,26 +472,20 @@
       });
     }
 
-    // WhatsApp text — detallado y legible para quien no usó la app
+    // Mensaje WhatsApp
     var NL = '\n';
-    var pagaron = sel.filter(function(f) { return gastos[f] > 0; });
-    var noPagaron = sel.filter(function(f) { return gastos[f] === 0; });
-
+    var pagaron = todos.filter(function(f) { return gastos[f] > 0; });
+    var noPagaron = todos.filter(function(f) { return gastos[f] === 0; });
     var txt = '💸 *RESUMEN DEL EVENTO*' + NL + NL;
-    txt += '👥 *Participantes (' + sel.length + '):* ' + sel.join(', ') + NL + NL;
-
+    txt += '👥 *Participantes (' + todos.length + '):* ' + todos.join(', ') + NL + NL;
     txt += '💰 *Lo que puso cada uno:*' + NL;
     pagaron.forEach(function(f) { txt += '  • ' + f + ': ' + fmt(gastos[f]) + NL; });
     if (noPagaron.length > 0) {
       txt += '  • ' + noPagaron.join(', ') + ': no puso nada' + NL;
     }
-    txt += NL;
-
-    txt += '📊 *Totales:*' + NL;
+    txt += NL + '📊 *Totales:*' + NL;
     txt += '  • Total juntado: ' + fmt(totalGeneral) + NL;
     txt += '  • Gasto común (entre todos): ' + fmt(Math.max(0, totalComun)) + NL;
-
-
     if (geData.length > 0) {
       txt += NL + '🔖 *Gastos puntuales:*' + NL;
       geData.forEach(function(g) {
@@ -388,14 +493,11 @@
         txt += '  • ' + g.desc + ' (' + fmt(g.monto) + '): ' + g.pax.join(', ') + ' → ' + fmt(pp) + ' c/u' + NL;
       });
     }
-
     txt += NL + '💳 *Quién le debe a quién:*' + NL + NL;
     if (txs.length === 0) {
       txt += '✅ Todo balanceado, nadie le debe nada a nadie.' + NL;
     } else {
-      txs.forEach(function(t) {
-        txt += '  👉 ' + t.from + ' le debe ' + fmt(t.amount) + ' a ' + t.to + NL;
-      });
+      txs.forEach(function(t) { txt += '  👉 ' + t.from + ' le debe ' + fmt(t.amount) + ' a ' + t.to + NL; });
     }
 
     html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:1rem">';
@@ -412,7 +514,11 @@
       });
     });
     document.getElementById('breset').addEventListener('click', function() {
-      sel = []; ges = []; gid = 0;
+      sel = []; guests = []; selGuests = []; ges = []; gid = 0;
+      guestPanelOpen = false;
+      document.getElementById('guest-panel').style.display = 'none';
+      document.getElementById('btn-toggle-guests').innerHTML = '<i class="ti ti-user-plus"></i> Invitados';
+      document.getElementById('gg').innerHTML = '';
       document.getElementById('gel').innerHTML = '';
       document.getElementById('out').innerHTML = '';
       renderFriends();
@@ -452,7 +558,6 @@
   renderFriends();
 })();
 </script>
+
 </body>
 </html>
- 
-
